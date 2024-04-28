@@ -65,7 +65,7 @@ public class SwerveDrive extends Command {
       -MathUtil.applyDeadband(m_DriveInputs.getX(), Constants.kDriveDeadband),
       -MathUtil.applyDeadband(m_DriveInputs.getY(), Constants.kDriveDeadband),
       rotationPower,
-      true, false);
+      Constants.INPUT_MODE != "DriveSim", false);
   }
 
   // Called once the command ends or is interrupted.

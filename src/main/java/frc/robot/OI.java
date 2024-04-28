@@ -90,6 +90,10 @@ public class OI {
         xInput = ()->driveController.getLeftY();
         yInput = ()->driveController.getLeftX();
         rotInput = ()->driveController.getRightX();
+      } else {
+        xInput = ()->-driveController.getLeftY();
+        yInput = ()->driveController.getLeftX();
+        rotInput = ()->driveController.getRightX();
       }
     } else {
       xInput = ()->-driveController.getLeftX();
@@ -116,54 +120,53 @@ public class OI {
       new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
       new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
       new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
+    } else {
+      ////////////////////////////////////////////////////
+      // Now Mapping Commands to XBoxz
+      ////////////////////////////////////////////////////
+
+      // Driver Grease Man's Special Abilities(OP)
+      new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new PrepareToShoot());
+      new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new PrepareToFerry());
+      new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new PivotToSpeaker());
+      new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new AmpPivotUp());
+      new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
+
+      new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new SpinUpShooter());
+      
+      
+      // Drive to locations on the field
+      new JoystickButton(m_DriverXboxController, Button.kA.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getAmpScorePose));
+      // new JoystickButton(m_DriverXboxController, Button.kX.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSource1Pose));
+      // new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSource3Pose));
+      // new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSpeakerScorePose));
+
+      // Operator Cookie Monster Special Abilities(MEGA OP)
+      new JoystickButton(m_OperatorXboxController, Button.kB.value).whileTrue(new SourceIntake());
+      new JoystickButton(m_OperatorXboxController, Button.kA.value).whileTrue(new MoveNoteForward());
+      new JoystickButton(m_OperatorXboxController, Button.kX.value).whileTrue(new GroundIntake());
+      new JoystickButton(m_OperatorXboxController, Button.kY.value).whileTrue(new MoveNoteBackward());
+
+      new JoystickButton(m_OperatorXboxController, Button.kBack.value).whileTrue(new AmpPivotToIntake());
+      new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new PivotDOWNDOWNDOWN());
+      new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new AmpPivotToIntake());
+
+      new JoystickButton(m_OperatorXboxController, Button.kRightBumper.value).whileTrue(new PrepareToShootClose());
+      new Trigger(()->{return (m_OperatorXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new ShootSpeaker());
+
+      new JoystickButton(m_OperatorXboxController, Button.kLeftBumper.value).whileTrue(new PrepareToAmp());
+      new Trigger(()->{return (m_OperatorXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new ScoreAmp());
+
+      new Trigger(m_OperatorXboxController.povDown(CommandScheduler.getInstance().getDefaultButtonLoop())).onTrue(new InstantCommand(()->{
+        TDNumber speakerHeightOffset = new TDNumber(BarrelPivot.getInstance(), "Auto Pivot", "Speaker Height Offset (meters)");
+        speakerHeightOffset.set(speakerHeightOffset.get() + Constants.SPEAKER_ADJUSTMENT_INCREMENT_M);
+      }));
+
+      new Trigger(m_OperatorXboxController.povUp(CommandScheduler.getInstance().getDefaultButtonLoop())).onTrue(new InstantCommand(()->{
+        TDNumber speakerHeightOffset = new TDNumber(BarrelPivot.getInstance(), "Auto Pivot", "Speaker Height Offset (meters)");
+        speakerHeightOffset.set(speakerHeightOffset.get() - Constants.SPEAKER_ADJUSTMENT_INCREMENT_M);
+      }));
     }
-    /*
-    ////////////////////////////////////////////////////
-    // Now Mapping Commands to XBoxz
-    ////////////////////////////////////////////////////
-
-    // Driver Grease Man's Special Abilities(OP)
-    new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new PrepareToShoot());
-    new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new PrepareToFerry());
-    new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new PivotToSpeaker());
-    new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new AmpPivotUp());
-    new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
-
-    new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new SpinUpShooter());
-    
-    
-    // Drive to locations on the field
-    new JoystickButton(m_DriverXboxController, Button.kA.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getAmpScorePose));
-    // new JoystickButton(m_DriverXboxController, Button.kX.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSource1Pose));
-    // new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSource3Pose));
-    // new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getSpeakerScorePose));
-
-    // Operator Cookie Monster Special Abilities(MEGA OP)
-    new JoystickButton(m_OperatorXboxController, Button.kB.value).whileTrue(new SourceIntake());
-    new JoystickButton(m_OperatorXboxController, Button.kA.value).whileTrue(new MoveNoteForward());
-    new JoystickButton(m_OperatorXboxController, Button.kX.value).whileTrue(new GroundIntake());
-    new JoystickButton(m_OperatorXboxController, Button.kY.value).whileTrue(new MoveNoteBackward());
-
-    new JoystickButton(m_OperatorXboxController, Button.kBack.value).whileTrue(new AmpPivotToIntake());
-    new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new PivotDOWNDOWNDOWN());
-    new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new AmpPivotToIntake());
-
-    new JoystickButton(m_OperatorXboxController, Button.kRightBumper.value).whileTrue(new PrepareToShootClose());
-    new Trigger(()->{return (m_OperatorXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new ShootSpeaker());
-
-    new JoystickButton(m_OperatorXboxController, Button.kLeftBumper.value).whileTrue(new PrepareToAmp());
-    new Trigger(()->{return (m_OperatorXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new ScoreAmp());
-
-    new Trigger(m_OperatorXboxController.povDown(CommandScheduler.getInstance().getDefaultButtonLoop())).onTrue(new InstantCommand(()->{
-      TDNumber speakerHeightOffset = new TDNumber(BarrelPivot.getInstance(), "Auto Pivot", "Speaker Height Offset (meters)");
-      speakerHeightOffset.set(speakerHeightOffset.get() + Constants.SPEAKER_ADJUSTMENT_INCREMENT_M);
-    }));
-
-    new Trigger(m_OperatorXboxController.povUp(CommandScheduler.getInstance().getDefaultButtonLoop())).onTrue(new InstantCommand(()->{
-      TDNumber speakerHeightOffset = new TDNumber(BarrelPivot.getInstance(), "Auto Pivot", "Speaker Height Offset (meters)");
-      speakerHeightOffset.set(speakerHeightOffset.get() - Constants.SPEAKER_ADJUSTMENT_INCREMENT_M);
-    }));
-    */
   }
 
   /**
