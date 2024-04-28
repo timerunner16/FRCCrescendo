@@ -30,6 +30,7 @@ import frc.robot.utils.SwerveDriveInputs;
 import frc.robot.commands.MoveNoteBackward;
 import frc.robot.commands.GroundIntake;
 import frc.robot.commands.MoveNoteForward;
+import frc.robot.commands.MoveNoteForwardNS;
 import frc.robot.commands.PrepareToAmp;
 import frc.robot.commands.PrepareToFerry;
 import frc.robot.commands.PrepareToShoot;
@@ -100,14 +101,20 @@ public class OI {
 
   public void bindControls() {
     if (Constants.INPUT_MODE == "DriveSim") {
-
+      new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new GroundIntake());
+      new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new SpinUpShooter());
+      new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new PivotUpwards());
+      new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new PivotDownwards());
+      new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
+      new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
+      new JoystickButton(m_DriverXboxController, Button.kStart.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
     } else if (Constants.INPUT_MODE == "DemoControllerSolo") {
       new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new PivotUpwards());
       new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new PivotDownwards());
       new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new GroundIntake());
       new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new SpinUpShooter());
       new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
-      new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForward());
+      new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
       new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
     }
     /*
