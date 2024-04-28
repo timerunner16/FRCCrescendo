@@ -40,6 +40,13 @@ import frc.robot.utils.vision.VisionConfig;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    /* Control scheme
+     * Options:
+     * DemoControllerSolo (singular XBox controller for demos)
+     * DrivingSim (Logitech Driving Force GT/steering wheel + pedals)
+    */
+    public static final String INPUT_MODE = "DemoControllerSolo";
+
     public static final double END_MATCH_TIME_S = 134.9;
 
     public static final double DEGREES_PER_REVOLUTION = 360;

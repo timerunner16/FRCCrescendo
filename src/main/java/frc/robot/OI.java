@@ -40,6 +40,8 @@ import frc.robot.commands.ShootSpeaker;
 import frc.robot.commands.SourceIntake;
 import frc.robot.commands.AmpAddOn.AmpPivotToIntake;
 import frc.robot.commands.AmpAddOn.AmpPivotUp;
+import frc.robot.commands.BarrelPivot.PivotUpwards;
+import frc.robot.commands.BarrelPivot.PivotDownwards;
 import frc.robot.commands.BarrelPivot.PivotDOWNDOWNDOWN;
 import frc.robot.commands.BarrelPivot.PivotToSpeaker;
 import frc.robot.commands.Drive.DriveToPose;
@@ -77,17 +79,37 @@ public class OI {
     XboxController driveController = m_DriverXboxController;
     Supplier<Double> xInput;
     Supplier<Double> yInput;
+    Supplier<Double> rotInput;
     if(RobotBase.isReal()){
-      xInput = ()->(!m_DriverXboxController.getAButton() ? (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)) : 0.0);
-      yInput = ()->(!m_DriverXboxController.getAButton() ? 0.0 : (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)));
+      if (Constants.INPUT_MODE == "DriveSim") {
+        xInput = ()->(!m_DriverXboxController.getAButton() ? (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)) : 0.0);
+        yInput = ()->(!m_DriverXboxController.getAButton() ? 0.0 : (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)));
+        rotInput = ()->(driveController.getLeftX());
+      } else if (Constants.INPUT_MODE == "DemoControllerSolo") {
+        xInput = ()->driveController.getLeftY();
+        yInput = ()->driveController.getLeftX();
+        rotInput = ()->driveController.getRightX();
+      }
     } else {
       xInput = ()->-driveController.getLeftX();
       yInput = ()->driveController.getLeftY();
+      rotInput = ()->driveController.getRightX();
     }
-    m_driveInputs = new SwerveDriveInputs(xInput, yInput, ()->driveController.getLeftX());
+    m_driveInputs = new SwerveDriveInputs(xInput, yInput, rotInput);
   }
 
   public void bindControls() {
+    if (Constants.INPUT_MODE == "DriveSim") {
+
+    } else if (Constants.INPUT_MODE == "DemoControllerSolo") {
+      new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new PivotUpwards());
+      new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new PivotDownwards());
+      new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new GroundIntake());
+      new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new SpinUpShooter());
+      new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
+      new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForward());
+      new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
+    }
     /*
     ////////////////////////////////////////////////////
     // Now Mapping Commands to XBoxz
