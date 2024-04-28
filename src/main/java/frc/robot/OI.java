@@ -78,18 +78,19 @@ public class OI {
     Supplier<Double> xInput;
     Supplier<Double> yInput;
     if(RobotBase.isReal()){
-      xInput = ()->driveController.getLeftY();
-      yInput = ()->driveController.getLeftX();
+      xInput = ()->(!m_DriverXboxController.getAButton() ? (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)) : 0.0);
+      yInput = ()->(!m_DriverXboxController.getAButton() ? 0.0 : (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)));
     } else {
       xInput = ()->-driveController.getLeftX();
       yInput = ()->driveController.getLeftY();
     }
-    m_driveInputs = new SwerveDriveInputs(xInput, yInput, ()->driveController.getRightX());
+    m_driveInputs = new SwerveDriveInputs(xInput, yInput, ()->driveController.getLeftX());
   }
 
   public void bindControls() {
+    /*
     ////////////////////////////////////////////////////
-    // Now Mapping Commands to XBox
+    // Now Mapping Commands to XBoxz
     ////////////////////////////////////////////////////
 
     // Driver Grease Man's Special Abilities(OP)
@@ -100,6 +101,7 @@ public class OI {
     new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
 
     new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new SpinUpShooter());
+    
     
     // Drive to locations on the field
     new JoystickButton(m_DriverXboxController, Button.kA.value).whileTrue(new DriveToPose(FieldUtils.getInstance()::getAmpScorePose));
@@ -132,6 +134,7 @@ public class OI {
       TDNumber speakerHeightOffset = new TDNumber(BarrelPivot.getInstance(), "Auto Pivot", "Speaker Height Offset (meters)");
       speakerHeightOffset.set(speakerHeightOffset.get() - Constants.SPEAKER_ADJUSTMENT_INCREMENT_M);
     }));
+    */
   }
 
   /**
