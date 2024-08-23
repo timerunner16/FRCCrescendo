@@ -43,9 +43,11 @@ public final class Constants {
     /* Control scheme
      * Options:
      * DemoControllerSolo (singular XBox controller for demos)
-     * DrivingSim (Logitech Driving Force GT/steering wheel + pedals)
+     * DriveSim (Logitech Driving Force GT/steering wheel + pedals)
     */
     public static final String INPUT_MODE = "DemoControllerSolo";
+
+    public static final double DEMO_BOX_WIDTH = 1.0;
 
     public static final double END_MATCH_TIME_S = 134.9;
 
@@ -101,7 +103,7 @@ public final class Constants {
     public static final double BP_ANGLE_INCREMENT_DEGREES = 0.25;
     public static final double kBPDeadband = 0.05;
 
-    public static final double BP_SPEED = 0.1;
+    public static final double BP_SPEED = 0.5;
     
     public static final double BP_ANGLE_OFFSET_TO_HORIZONTAL_DEGREES = 70;
     public static final double BP_ANGLE_TOLERANCE_DEGREES = 3;
