@@ -319,6 +319,15 @@ public class Drive extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
+
+    if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DemoControllerSolo) {
+      Pose2d currentPose = getPose();
+      xSpeedDelivered = (xSpeedDelivered > 0 & currentPose.getX() > Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
+      xSpeedDelivered = (xSpeedDelivered < 0 & currentPose.getX() <-Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
+
+      ySpeedDelivered = (ySpeedDelivered > 0 & currentPose.getY() > Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
+      ySpeedDelivered = (ySpeedDelivered < 0 & currentPose.getY() <-Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
+    }
     double rotDelivered = m_currentRotation * Constants.kMaxAngularSpeed;
     Rotation2d fieldAngle = m_DrivePoseEstimator.getEstimatedPosition().getRotation()
                                   .plus(FieldUtils.getInstance().getRotationOffset());//Compensates for alliance

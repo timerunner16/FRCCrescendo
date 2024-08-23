@@ -42,10 +42,16 @@ import frc.robot.utils.vision.VisionConfig;
 public final class Constants {
     /* Control scheme
      * Options:
+     * Default (regular 2 controller input setup)
      * DemoControllerSolo (singular XBox controller for demos)
      * DriveSim (Logitech Driving Force GT/steering wheel + pedals)
     */
-    public static final String INPUT_MODE = "DemoControllerSolo";
+    public enum INPUT_MODE_TYPE {
+        Default,
+        DemoControllerSolo,
+        DriveSim
+    } 
+    public static final INPUT_MODE_TYPE INPUT_MODE = INPUT_MODE_TYPE.DemoControllerSolo;
 
     public static final double DEMO_BOX_WIDTH = 1.0;
 

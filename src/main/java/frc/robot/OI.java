@@ -82,11 +82,11 @@ public class OI {
     Supplier<Double> yInput;
     Supplier<Double> rotInput;
     if(RobotBase.isReal()){
-      if (Constants.INPUT_MODE == "DriveSim") {
+      if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DriveSim) {
         xInput = ()->(!m_DriverXboxController.getAButton() ? (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)) : 0.0);
         yInput = ()->(!m_DriverXboxController.getAButton() ? 0.0 : (1.0-(driveController.getLeftY()*0.5+0.5))-(1.0-(driveController.getRightX()*0.5+0.5)));
         rotInput = ()->(driveController.getLeftX());
-      } else if (Constants.INPUT_MODE == "DemoControllerSolo") {
+      } else if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DemoControllerSolo) {
         xInput = ()->driveController.getLeftY();
         yInput = ()->driveController.getLeftX();
         rotInput = ()->driveController.getRightX();
@@ -104,7 +104,7 @@ public class OI {
   }
 
   public void bindControls() {
-    if (Constants.INPUT_MODE == "DriveSim") {
+    if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DriveSim) {
       new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new GroundIntake());
       new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new SpinUpShooter());
       new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new PivotUpwards());
@@ -112,14 +112,14 @@ public class OI {
       new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
       new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
       new JoystickButton(m_DriverXboxController, Button.kStart.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
-    } else if (Constants.INPUT_MODE == "DemoControllerSolo") {
+    } else if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DemoControllerSolo) {
       new Trigger(()->{return (m_DriverXboxController.getRightTriggerAxis() > 0.5);}).whileTrue(new PivotUpwards());
       new Trigger(()->{return (m_DriverXboxController.getLeftTriggerAxis() > 0.5);}).whileTrue(new PivotDownwards());
       new JoystickButton(m_DriverXboxController, Button.kRightBumper.value).whileTrue(new GroundIntake());
       new JoystickButton(m_DriverXboxController, Button.kLeftBumper.value).whileTrue(new SpinUpShooter());
       new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
       new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
-      new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().zeroHeading()));
+      new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().resetOdometry(new Pose2d())));
     } else {
       ////////////////////////////////////////////////////
       // Now Mapping Commands to XBoxz
