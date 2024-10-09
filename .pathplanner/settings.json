@@ -3,7 +3,8 @@
   "robotLength": 0.66,
   "holonomicMode": true,
   "pathFolders": [
-    "Caitlin's CATastrophies"
+    "Caitlin's CATastrophies",
+    "Dancin' Movements"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.5,

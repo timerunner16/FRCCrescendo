@@ -92,7 +92,7 @@ public class OI {
         rotInput = ()->driveController.getRightX();
       } else {
         xInput = ()->-driveController.getLeftY();
-        yInput = ()->driveController.getLeftX();
+        yInput = ()->(-driveController.getLeftX());
         rotInput = ()->driveController.getRightX();
       }
     } else {
@@ -120,6 +120,14 @@ public class OI {
       new JoystickButton(m_DriverXboxController, Button.kB.value).whileTrue(new MoveNoteBackward());
       new JoystickButton(m_DriverXboxController, Button.kY.value).whileTrue(new MoveNoteForwardNS());
       new JoystickButton(m_DriverXboxController, Button.kBack.value).onTrue(new InstantCommand(()->Drive.getInstance().resetOdometry(new Pose2d())));
+      new Trigger(()->{
+        int povangle = m_DriverXboxController.getPOV();
+        double power = 0;
+        if (povangle != -1) {
+          power = Math.cos(Math.toRadians(povangle));
+        }
+        return (power < -0.5);
+      }).onTrue(new ScoreAmp());
     } else {
       ////////////////////////////////////////////////////
       // Now Mapping Commands to XBoxz
@@ -147,7 +155,7 @@ public class OI {
       new JoystickButton(m_OperatorXboxController, Button.kX.value).whileTrue(new GroundIntake());
       new JoystickButton(m_OperatorXboxController, Button.kY.value).whileTrue(new MoveNoteBackward());
 
-      new JoystickButton(m_OperatorXboxController, Button.kBack.value).whileTrue(new AmpPivotToIntake());
+      new JoystickButton(m_OperatorXboxController, Button.kBack.value).whileTrue(new SpinUpShooter());
       new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new PivotDOWNDOWNDOWN());
       new JoystickButton(m_OperatorXboxController, Button.kStart.value).whileTrue(new AmpPivotToIntake());
 

@@ -13,13 +13,13 @@ import frc.robot.subsystems.AmpAddOn;
 
 public class AmpPivotRelativeAngleControl extends Command {
   AmpAddOn m_ampAddOn;
-  XboxController m_operatorController;
+  XboxController m_driverController;
 
   /** Creates a new AmpPivotRelativeAngleControl. */
   public AmpPivotRelativeAngleControl() {
     super(AmpAddOn.getInstance(), "Basic", "AmpPivotRelativeAngleControl");
     m_ampAddOn = AmpAddOn.getInstance();
-    m_operatorController = OI.getInstance().getOperatorXboxController();
+    m_driverController = OI.getInstance().getDriverXboxController();
     
     addRequirements(m_ampAddOn);
   }
@@ -32,7 +32,12 @@ public class AmpPivotRelativeAngleControl extends Command {
   @Override
   public void execute() {
     double angle = m_ampAddOn.getTargetAngle();
-    double input = -MathUtil.applyDeadband(m_operatorController.getRightY(), Constants.kADeadband);
+    int povangle = m_driverController.getPOV();
+    double power = 0;
+    if (povangle != -1) {
+      power = Math.sin(Math.toRadians(povangle));
+    }
+    double input = -MathUtil.applyDeadband(power, Constants.kADeadband);
 
     angle += input * Constants.A_ANGLE_INCREMENT_DEGREES;
 

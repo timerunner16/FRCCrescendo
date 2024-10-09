@@ -320,13 +320,13 @@ public class Drive extends SubsystemBase {
     double xSpeedDelivered = xSpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeedCommanded * Constants.kMaxSpeedMetersPerSecond;
 
-    if (Constants.INPUT_MODE == Constants.INPUT_MODE_TYPE.DemoControllerSolo) {
+    if (Constants.DEMO_BOX_ENABLED) {
       Pose2d currentPose = getPose();
-      xSpeedDelivered = (xSpeedDelivered > 0 & currentPose.getX() > Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
-      xSpeedDelivered = (xSpeedDelivered < 0 & currentPose.getX() <-Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
+      xSpeedDelivered = (xSpeedDelivered < 0 & currentPose.getX() > Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
+      xSpeedDelivered = (xSpeedDelivered > 0 & currentPose.getX() <-Constants.DEMO_BOX_WIDTH) ? 0 : xSpeedDelivered;
 
-      ySpeedDelivered = (ySpeedDelivered > 0 & currentPose.getY() > Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
-      ySpeedDelivered = (ySpeedDelivered < 0 & currentPose.getY() <-Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
+      ySpeedDelivered = (ySpeedDelivered < 0 & currentPose.getY() > Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
+      ySpeedDelivered = (ySpeedDelivered > 0 & currentPose.getY() <-Constants.DEMO_BOX_WIDTH) ? 0 : ySpeedDelivered;
     }
     double rotDelivered = m_currentRotation * Constants.kMaxAngularSpeed;
     Rotation2d fieldAngle = m_DrivePoseEstimator.getEstimatedPosition().getRotation()
